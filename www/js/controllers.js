@@ -1,11 +1,22 @@
 var app = angular.module('app.controllers', ['geocodingService']);
+const API_URL = "http://localhost:3000";
+app.controller('orderARideCtrl', function ($scope, Geocoder, $http) {
+  $scope.order = {};
+  $scope.submit = function (order) {
+    $scope.order = angular.copy(order);
+    $http.post([API_URL, "orders"].join("/"), {
+      order: {
+        pickup_address: $scope.order.pickup,
+        dropoff_address: $scope.order.dropoff,
+        client_name: $scope.order.name,
+        phone: $scope.order.phoneNumber
+      }
+    }).then(res => {
+      console.log("result: ", res);
+    })
 
-app.controller('orderARideCtrl', function($scope, Geocoder) {
-  $scope.pickup = 'Liivi 2, Tartu';
-  $scope.destination = 'Raatuse 22, Tartu';
-  $scope.submit = function() {
-    //todo send request to server here
   };
+
 
   //usage example
   Geocoder.code($scope.pickup).then(res => {
@@ -15,10 +26,11 @@ app.controller('orderARideCtrl', function($scope, Geocoder) {
 
 });
 
+
 app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function($scope, $stateParams) {
+  function ($scope, $stateParams) {
 
 
   }])
@@ -26,7 +38,7 @@ app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is th
 app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function($scope, $stateParams) {
+  function ($scope, $stateParams) {
 
 
   }])
@@ -34,7 +46,7 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
   .controller('currentOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function($scope, $stateParams) {
+    function ($scope, $stateParams) {
 
 
     }])
@@ -42,7 +54,7 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
   .controller('orderHistoryCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function($scope, $stateParams) {
+    function ($scope, $stateParams) {
 
 
     }])

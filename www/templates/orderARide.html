@@ -3,11 +3,11 @@
     <form id="orderARide-form2" class="list">
       <label class="item item-input item-stacked-label" id="orderARide-input3">
         <span class="input-label">Pickup location</span>
-        <input placeholder="Liivi 2, Tartu" type="text">
+        <input ng-model="order.pickup" placeholder="Liivi 2, Tartu" type="text">
       </label>
       <label class="item item-input item-stacked-label" id="orderARide-input4">
         <span class="input-label">Destination</span>
-        <input placeholder="Raatuse 22" type="text">
+        <input ng-model="order.dropoff" placeholder="Raatuse 22" type="text">
       </label>
       <div id="orderARide-container1">
         <ion-list id="orderARide-list6">
@@ -17,15 +17,15 @@
           </ion-item>
         </ion-list>
       </div>
-      <label class="item item-input item-stacked-label" id="orderARide-input5">
+      <label  class="item item-input item-stacked-label" id="orderARide-input5">
         <span class="input-label">Name</span>
-        <input placeholder="" type="text">
+        <input ng-model="order.name" placeholder="Banuelos" type="text">
       </label>
       <label class="item item-input item-stacked-label" id="orderARide-input6">
         <span class="input-label">Phone #</span>
-        <input placeholder="" type="tel">
+        <input ng-model="order.phoneNumber" placeholder="+37253915322" type="tel">
       </label>
     </form>
-    <button ui-sref="rideInfo" id="orderARide-button1" ng-click="submit()" class="button button-positive button-large button-block">Order taxi</button>
+    <button ui-sref="rideInfo" id="orderARide-button1" ng-click="submit(order)" class="button button-positive button-large button-block">Order taxi</button>
   </ion-content>
 </ion-view>
