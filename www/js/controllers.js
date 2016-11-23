@@ -1,7 +1,7 @@
-var app = angular.module('app.controllers', ['angular.google.distance']);
+var app = angular.module('app.controllers', ['geocodingService']);
 
 
-app.controller('orderARideCtrl', function($scope, GoogleDistanceAPI) {
+app.controller('orderARideCtrl', function($scope, Geocoder) {
   $scope.pickup = 'Liivi 2, Tartu';
   $scope.destination = 'Raatuse 22, Tartu';
   $scope.submit = function() {
@@ -11,14 +11,20 @@ app.controller('orderARideCtrl', function($scope, GoogleDistanceAPI) {
     // });
 
   };
+  //
+  // $scope.data = GoogleDistanceAPI.getDistanceMatrix({
+  //   origins: [$scope.pickup],
+  //   destinations: [$scope.destination]
+  // }).then(distanceMatrix => {
+  //   console.log(distanceMatrix);
+  //   return distanceMatrix;
+  // });
 
-  $scope.data = GoogleDistanceAPI.getDistanceMatrix({
-    origins: [$scope.pickup],
-    destinations: [$scope.destination]
-  }).then(distanceMatrix => {
-    console.log(distanceMatrix);
-    return distanceMatrix;
+  Geocoder.code($scope.pickup).then(res => {
+    $scope.data = res;
+    console.log("dat", $scope.data);
   });
+
 });
 
 app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
