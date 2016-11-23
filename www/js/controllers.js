@@ -1,25 +1,13 @@
 var app = angular.module('app.controllers', ['geocodingService']);
 
-
 app.controller('orderARideCtrl', function($scope, Geocoder) {
   $scope.pickup = 'Liivi 2, Tartu';
   $scope.destination = 'Raatuse 22, Tartu';
   $scope.submit = function() {
-
-    // var googleMapsClient = require('@google/maps').createClient({
-    //   key: 'AIzaSyCV5Dzh05AxFuGv9ado0G8mRofL-8pOfL4'
-    // });
-
+    //todo send request to server here
   };
-  //
-  // $scope.data = GoogleDistanceAPI.getDistanceMatrix({
-  //   origins: [$scope.pickup],
-  //   destinations: [$scope.destination]
-  // }).then(distanceMatrix => {
-  //   console.log(distanceMatrix);
-  //   return distanceMatrix;
-  // });
 
+  //usage example
   Geocoder.code($scope.pickup).then(res => {
     $scope.data = res;
     console.log("dat", $scope.data);
