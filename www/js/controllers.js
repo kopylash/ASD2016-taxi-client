@@ -1,32 +1,37 @@
 let app = angular.module('app.controllers', ['geocodingService']);
+
 const API_URL = "http://localhost:3000";
+
 app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoading, $ionicPopup) {
+
+  $scope.showLoading = function () {
+    $ionicLoading.show({
+      template: 'Loading',
+    }).then(function () {
+      console.log("loading displayed");
+    });
+  };
+  $scope.hideLoading = function () {
+    $ionicLoading.hide().then(function () {
+      console.log("loading hidden");
+    });
+  };
+
+  $scope.showAlert = function (message) {
+    let alertPopup = $ionicPopup.alert({
+      title: "Woops something went wrong =(",
+      template: message
+    });
+
+    alertPopup.then(function () {
+      console.log("thanks")
+    });
+  };
+
   $scope.order = {};
+
   $scope.submit = function (order) {
     $scope.order = angular.copy(order);
-    $scope.showLoading = function () {
-      $ionicLoading.show({
-        template: 'Loading',
-      }).then(function () {
-        console.log("loading displayed");
-      });
-    };
-    $scope.hideLoading = function () {
-      $ionicLoading.hide().then(function () {
-        console.log("loading hidden");
-      });
-    };
-
-    $scope.showAlert = function (message) {
-      let alertPopup = $ionicPopup.alert({
-        title: "Woops something went wrong =(",
-        template: message
-      });
-
-      alertPopup.then(function (res) {
-        console.log("thanks")
-      });
-    };
 
     $scope.showLoading();
 
@@ -63,7 +68,7 @@ app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is th
   function ($scope, $stateParams) {
 
 
-  }])
+  }]);
 
 app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -87,4 +92,4 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
     function ($scope, $stateParams) {
 
 
-    }])
+    }]);
