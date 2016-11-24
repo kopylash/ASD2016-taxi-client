@@ -18,6 +18,7 @@ app.service('sharedOrderResponse', function () {
 
 app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
+
   $scope.submit = function (order) {
     $scope.order = angular.copy(order);
     $scope.showLoading = function () {
@@ -33,16 +34,21 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
       });
     };
 
-    $scope.showAlert = function (message) {
-      let alertPopup = $ionicPopup.alert({
-        title: "Woops something went wrong =(",
-        template: message
-      });
+  $scope.showAlert = function (message) {
+    let alertPopup = $ionicPopup.alert({
+      title: "Woops something went wrong =(",
+      template: message
+    });
 
-      alertPopup.then(function () {
-        console.log("thanks")
-      });
-    };
+    alertPopup.then(function () {
+      console.log("thanks")
+    });
+  };
+
+  $scope.order = {};
+
+  $scope.submit = function (order) {
+    $scope.order = angular.copy(order);
 
     $scope.showLoading();
 
