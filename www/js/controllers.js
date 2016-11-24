@@ -1,6 +1,6 @@
 let app = angular.module('app.controllers', ['geocodingService']);
 const API_URL = "http://localhost:3000";
-app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoading, $ionicPopup) {
+app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup) {
   $scope.order = {};
   $scope.submit = function (order) {
     $scope.order = angular.copy(order);
@@ -23,7 +23,7 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoadin
         template: message
       });
 
-      alertPopup.then(function (res) {
+      alertPopup.then(function () {
         console.log("thanks")
       });
     };
@@ -40,6 +40,7 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoadin
     }).then(res => {
       $scope.hideLoading();
       console.log("result: ", res);
+      $location.path("/page2");
     }, function (error) {
       console.log(error);
       $scope.hideLoading();
@@ -63,7 +64,7 @@ app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is th
   function ($scope, $stateParams) {
 
 
-  }])
+  }]);
 
 app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -87,4 +88,4 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
     function ($scope, $stateParams) {
 
 
-    }])
+    }]);
