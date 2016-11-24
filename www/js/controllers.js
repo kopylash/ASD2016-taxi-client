@@ -19,20 +19,18 @@ app.service('sharedOrderResponse', function () {
 app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
 
-  $scope.submit = function (order) {
-    $scope.order = angular.copy(order);
-    $scope.showLoading = function () {
-      $ionicLoading.show({
-        template: 'Loading',
-      }).then(function () {
-        console.log("loading displayed");
-      });
-    };
-    $scope.hideLoading = function () {
-      $ionicLoading.hide().then(function () {
-        console.log("loading hidden");
-      });
-    };
+  $scope.showLoading = function () {
+    $ionicLoading.show({
+      template: 'Loading',
+    }).then(function () {
+      console.log("loading displayed");
+    });
+  };
+  $scope.hideLoading = function () {
+    $ionicLoading.hide().then(function () {
+      console.log("loading hidden");
+    });
+  };
 
   $scope.showAlert = function (message) {
     let alertPopup = $ionicPopup.alert({
@@ -45,41 +43,40 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
     });
   };
 
-  $scope.order = {};
+    $scope.order = {};
 
-  $scope.submit = function (order) {
-    $scope.order = angular.copy(order);
+    $scope.submit = function (order) {
+      $scope.order = angular.copy(order);
 
-    $scope.showLoading();
+      $scope.showLoading();
 
-    $http.post([API_URL, "orders"].join("/"), {
-      order: {
-        pickup_address: $scope.order.pickup,
-        dropoff_address: $scope.order.dropoff,
-        client_name: $scope.order.name,
-        phone: $scope.order.phoneNumber
-      }
-    }).then(res => {
-      $scope.hideLoading();
-      console.log("result: ", res);
-      sharedOrderResponse.setResponse(res);
-      $location.path("/page2");
-    }, function (error) {
-      console.log(error);
-      $scope.hideLoading();
-      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+      $http.post([API_URL, "orders"].join("/"), {
+        order: {
+          pickup_address: $scope.order.pickup,
+          dropoff_address: $scope.order.dropoff,
+          client_name: $scope.order.name,
+          phone: $scope.order.phoneNumber
+        }
+      }).then(res => {
+        $scope.hideLoading();
+        console.log("result: ", res);
+        sharedOrderResponse.setResponse(res);
+        $location.path("/page2");
+      }, function (error) {
+        console.log(error);
+        $scope.hideLoading();
+        $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+      });
+    };
+
+
+    //usage example
+    Geocoder.code($scope.pickup).then(res => {
+      $scope.data = res;
+      console.log("dat", $scope.data);
     });
-  };
 
-
-  //usage example
-  Geocoder.code($scope.pickup).then(res => {
-    $scope.data = res;
-    console.log("dat", $scope.data);
   });
-
-});
-
 
 app.controller('rideInfoCtrl', function ($scope, $stateParams, sharedOrderResponse, $http) {
   $scope.orderInfo = sharedOrderResponse.getResponse();
