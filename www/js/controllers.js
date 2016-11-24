@@ -1,9 +1,35 @@
-var app = angular.module('app.controllers', ['geocodingService']);
+let app = angular.module('app.controllers', ['geocodingService']);
 const API_URL = "http://localhost:3000";
-app.controller('orderARideCtrl', function ($scope, Geocoder, $http) {
+app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoading, $ionicPopup) {
   $scope.order = {};
   $scope.submit = function (order) {
     $scope.order = angular.copy(order);
+    $scope.showLoading = function () {
+      $ionicLoading.show({
+        template: 'Loading',
+      }).then(function () {
+        console.log("loading displayed");
+      });
+    };
+    $scope.hideLoading = function () {
+      $ionicLoading.hide().then(function () {
+        console.log("loading hidden");
+      });
+    };
+
+    $scope.showAlert = function (message) {
+      let alertPopup = $ionicPopup.alert({
+        title: "Woops something went wrong =(",
+        template: message
+      });
+
+      alertPopup.then(function (res) {
+        console.log("thanks")
+      });
+    };
+
+    $scope.showLoading();
+
     $http.post([API_URL, "orders"].join("/"), {
       order: {
         pickup_address: $scope.order.pickup,
@@ -12,9 +38,13 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http) {
         phone: $scope.order.phoneNumber
       }
     }).then(res => {
+      $scope.hideLoading();
       console.log("result: ", res);
-    })
-
+    }, function (error) {
+      console.log(error);
+      $scope.hideLoading();
+      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+    });
   };
 
 
