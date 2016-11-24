@@ -7,3 +7,4 @@ plugins/
 www/lib
 *.iml
 .idea
+npm-debug.log

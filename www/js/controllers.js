@@ -1,26 +1,95 @@
-var app = angular.module('starter.controllers', []);
+let app = angular.module('app.controllers', ['geocodingService']);
 
-app.controller('BookingsCtrl', function($scope, $ionicModal, $http) {
-  $scope.longitude = 0;
-  $scope.latitude = 0;
-  $scope.sync_notification = '';
+const API_URL = "http://localhost:3000";
 
-  $scope.submit = function() {
-    $http.post('http://localhost:3000/bookings', {longitude: $scope.longitude, latitude: $scope.latitude})
-      .then(function (response) {
-        $scope.sync_notification = response.data.message;
-        $scope.modal.show();
-      });
+app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $ionicLoading, $ionicPopup) {
+
+  $scope.showLoading = function () {
+    $ionicLoading.show({
+      template: 'Loading',
+    }).then(function () {
+      console.log("loading displayed");
+    });
+  };
+  $scope.hideLoading = function () {
+    $ionicLoading.hide().then(function () {
+      console.log("loading hidden");
+    });
   };
 
-  $ionicModal.fromTemplateUrl('templates/bookings/sync-notification.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
+  $scope.showAlert = function (message) {
+    let alertPopup = $ionicPopup.alert({
+      title: "Woops something went wrong =(",
+      template: message
+    });
+
+    alertPopup.then(function () {
+      console.log("thanks")
+    });
+  };
+
+  $scope.order = {};
+
+  $scope.submit = function (order) {
+    $scope.order = angular.copy(order);
+
+    $scope.showLoading();
+
+    $http.post([API_URL, "orders"].join("/"), {
+      order: {
+        pickup_address: $scope.order.pickup,
+        dropoff_address: $scope.order.dropoff,
+        client_name: $scope.order.name,
+        phone: $scope.order.phoneNumber
+      }
+    }).then(res => {
+      $scope.hideLoading();
+      console.log("result: ", res);
+    }, function (error) {
+      console.log(error);
+      $scope.hideLoading();
+      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+    });
+  };
+
+
+  //usage example
+  Geocoder.code($scope.pickup).then(res => {
+    $scope.data = res;
+    console.log("dat", $scope.data);
   });
 
-  $scope.closeModal = function() {
-    $scope.sync_notification = '';
-    $scope.modal.hide();
-  };
 });
+
+
+app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  function ($scope, $stateParams) {
+
+
+  }]);
+
+app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  function ($scope, $stateParams) {
+
+
+  }])
+
+  .controller('currentOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+    function ($scope, $stateParams) {
+
+
+    }])
+
+  .controller('orderHistoryCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+    function ($scope, $stateParams) {
+
+
+    }]);
