@@ -1,6 +1,22 @@
 let app = angular.module('app.controllers', ['geocodingService']);
+
 const API_URL = "http://localhost:3000";
-app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup) {
+
+app.service('sharedOrderResponse', function () {
+  let response = {};
+
+  return {
+    getResponse: function () {
+      console.log(response);
+      return response
+    },
+    setResponse: function (res) {
+      response = res;
+    }
+  }
+});
+
+app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
   $scope.submit = function (order) {
     $scope.order = angular.copy(order);
@@ -40,6 +56,7 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
     }).then(res => {
       $scope.hideLoading();
       console.log("result: ", res);
+      sharedOrderResponse.setResponse(res);
       $location.path("/page2");
     }, function (error) {
       console.log(error);
@@ -58,13 +75,15 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
 });
 
 
-app.controller('rideInfoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $stateParams) {
+app.controller('rideInfoCtrl', function ($scope, $stateParams, sharedOrderResponse, $http) {
+  $scope.orderInfo = sharedOrderResponse.getResponse();
 
-
-  }]);
+  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.id].join("/"))
+    .then(res => {
+      $scope.driverInfo = res;
+    }, function (error) {
+    })
+});
 
 app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
