@@ -2,19 +2,6 @@ let app = angular.module('app.controllers', ['geocodingService']);
 
 const API_URL = "http://localhost:3000";
 
-app.service('sharedOrderResponse', function () {
-  let response = {};
-
-  return {
-    getResponse: function () {
-      console.log(response);
-      return response
-    },
-    setResponse: function (res) {
-      response = res;
-    }
-  }
-});
 
 app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
@@ -43,40 +30,38 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
     });
   };
 
-    $scope.order = {};
+  $scope.submit = function (order) {
+    $scope.order = angular.copy(order);
 
-    $scope.submit = function (order) {
-      $scope.order = angular.copy(order);
+    $scope.showLoading();
 
-      $scope.showLoading();
-
-      $http.post([API_URL, "orders"].join("/"), {
-        order: {
-          pickup_address: $scope.order.pickup,
-          dropoff_address: $scope.order.dropoff,
-          client_name: $scope.order.name,
-          phone: $scope.order.phoneNumber
-        }
-      }).then(res => {
-        $scope.hideLoading();
-        console.log("result: ", res);
-        sharedOrderResponse.setResponse(res);
-        $location.path("/page2");
-      }, function (error) {
-        console.log(error);
-        $scope.hideLoading();
-        $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
-      });
-    };
-
-
-    //usage example
-    Geocoder.code($scope.pickup).then(res => {
-      $scope.data = res;
-      console.log("dat", $scope.data);
+    $http.post([API_URL, "orders"].join("/"), {
+      order: {
+        pickup_address: $scope.order.pickup,
+        dropoff_address: $scope.order.dropoff,
+        client_name: $scope.order.name,
+        phone: $scope.order.phoneNumber
+      }
+    }).then(res => {
+      $scope.hideLoading();
+      console.log("result: ", res);
+      sharedOrderResponse.setResponse(res);
+      $location.path("/page2");
+    }, function (error) {
+      console.log(error);
+      $scope.hideLoading();
+      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
     });
+  };
 
+
+  //usage example
+  Geocoder.code($scope.pickup).then(res => {
+    $scope.data = res;
+    console.log("dat", $scope.data);
   });
+
+});
 
 app.controller('rideInfoCtrl', function ($scope, $stateParams, sharedOrderResponse, $http) {
   $scope.orderInfo = sharedOrderResponse.getResponse();
@@ -85,6 +70,7 @@ app.controller('rideInfoCtrl', function ($scope, $stateParams, sharedOrderRespon
     .then(res => {
       $scope.driverInfo = res;
     }, function (error) {
+      console.log(error);
     })
 });
 
