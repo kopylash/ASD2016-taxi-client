@@ -68,6 +68,7 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
 
   $http.get([API_URL, "drivers", $scope.orderInfo.data.order.id].join("/")).then(res => {
     $scope.driverInfo = res;
+    console.log($scope.driverInfo);
   }, function(error) {
     console.log(error);
   })
