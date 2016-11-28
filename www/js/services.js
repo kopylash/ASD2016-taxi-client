@@ -1,22 +1,22 @@
 angular.module('app.services', [])
 
-  .factory('BlankFactory', [function () {
+  .factory('BlankFactory', [function() {
 
   }])
 
-  .service('BlankService', [function () {
+  .service('BlankService', [function() {
 
   }])
 
-  .service('sharedOrderResponse', function () {
+  .service('sharedOrderResponse', function() {
     let response = {};
 
     return {
-      getResponse: function () {
+      getResponse: function() {
         console.log(response);
         return response
       },
-      setResponse: function (res) {
+      setResponse: function(res) {
         response = res;
       }
     }

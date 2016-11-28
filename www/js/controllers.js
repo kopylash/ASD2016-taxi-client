@@ -3,34 +3,34 @@ let app = angular.module('app.controllers', ['geocodingService']);
 const API_URL = "http://localhost:3000";
 
 
-app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
+app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
 
-  $scope.showLoading = function () {
+  $scope.showLoading = function() {
     $ionicLoading.show({
       template: 'Loading',
-    }).then(function () {
+    }).then(function() {
       console.log("loading displayed");
     });
   };
-  $scope.hideLoading = function () {
-    $ionicLoading.hide().then(function () {
+  $scope.hideLoading = function() {
+    $ionicLoading.hide().then(function() {
       console.log("loading hidden");
     });
   };
 
-  $scope.showAlert = function (message) {
+  $scope.showAlert = function(message) {
     let alertPopup = $ionicPopup.alert({
       title: "Woops something went wrong =(",
       template: message
     });
 
-    alertPopup.then(function () {
+    alertPopup.then(function() {
       console.log("thanks")
     });
   };
 
-  $scope.submit = function (order) {
+  $scope.submit = function(order) {
     $scope.order = angular.copy(order);
 
     $scope.showLoading();
@@ -47,7 +47,7 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
       console.log("result: ", res);
       sharedOrderResponse.setResponse(res);
       $location.path("/page2");
-    }, function (error) {
+    }, function(error) {
       console.log(error);
       $scope.hideLoading();
       $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
@@ -63,21 +63,20 @@ app.controller('orderARideCtrl', function ($scope, Geocoder, $http, $location, $
 
 });
 
-app.controller('rideInfoCtrl', function ($scope, $stateParams, sharedOrderResponse, $http) {
+app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, $http) {
   $scope.orderInfo = sharedOrderResponse.getResponse();
 
-  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.id].join("/"))
-    .then(res => {
-      $scope.driverInfo = res;
-    }, function (error) {
-      console.log(error);
-    })
+  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.id].join("/")).then(res => {
+    $scope.driverInfo = res;
+  }, function(error) {
+    console.log(error);
+  })
 });
 
 app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-  function ($scope, $stateParams) {
+  function($scope, $stateParams) {
 
 
   }])
@@ -85,7 +84,7 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
   .controller('currentOrderCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+    function($scope, $stateParams) {
 
 
     }])
@@ -93,7 +92,7 @@ app.controller('newOrderCtrl', ['$scope', '$stateParams', // The following is th
   .controller('orderHistoryCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+    function($scope, $stateParams) {
 
 
     }]);
