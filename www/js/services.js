@@ -13,7 +13,6 @@ angular.module('app.services', [])
 
     return {
       getResponse: function() {
-        console.log(response);
         return response
       },
       setResponse: function(res) {

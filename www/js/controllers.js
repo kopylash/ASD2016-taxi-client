@@ -12,6 +12,8 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
       Geocoder.reverseEncode(latitude, longitude).then(address => {
         $scope.order.pickup = address;
+        $scope.order.pickupLat = latitude;
+        $scope.order.pickupLon = longitude;
       });
     });
   };
@@ -20,12 +22,13 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
     $ionicLoading.show({
       template: 'Loading',
     }).then(function() {
-      console.log("loading displayed");
+      // console.log("loading displayed");
     });
   };
+
   $scope.hideLoading = function() {
     $ionicLoading.hide().then(function() {
-      console.log("loading hidden");
+      // console.log("loading hidden");
     });
   };
 
@@ -36,7 +39,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
     });
 
     alertPopup.then(function() {
-      console.log("thanks")
+      // console.log("thanks")
     });
   };
 
@@ -45,31 +48,41 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
     $scope.showLoading();
 
-    $http.post([API_URL, "orders"].join("/"), {
-      order: {
-        pickup_address: $scope.order.pickup,
-        dropoff_address: $scope.order.dropoff,
-        client_name: $scope.order.name,
-        phone: $scope.order.phoneNumber
-      }
-    }).then(res => {
+    Geocoder.encode($scope.order.dropoff).then(geodata => {
+      $scope.order.dropoff = geodata.formatted_address;
+      $scope.order.dropoffLat = geodata.geometry.location.lat;
+      $scope.order.dropoffLon = geodata.geometry.location.lng;
+
+      console.log('BEFORE', $scope.order);
+
+      $http.post([API_URL, "orders"].join("/"), {
+        order: {
+          pickup_address: $scope.order.pickup,
+          dropoff_address: $scope.order.dropoff,
+          client_name: $scope.order.name,
+          phone: $scope.order.phoneNumber,
+          pickup_lat: $scope.order.pickupLat,
+          pickup_lon: $scope.order.pickupLon,
+          dropoff_lat: $scope.order.dropoffLat,
+          dropoff_lon: $scope.order.dropoffLon
+        }
+      }).then(res => {
+        $scope.hideLoading();
+        console.log("result: ", res);
+        sharedOrderResponse.setResponse(res);
+        $location.path("/page2");
+      }, function(error) {
+        console.log(error);
+        $scope.hideLoading();
+        $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+      });
+    }).catch(error => {
+      console.log('Geocoding error', error);
       $scope.hideLoading();
-      console.log("result: ", res);
-      sharedOrderResponse.setResponse(res);
-      $location.path("/page2");
-    }, function(error) {
-      console.log(error);
-      $scope.hideLoading();
-      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+      $scope.showAlert('Dropoff address is not correct');
     });
+
   };
-
-
-  //usage example
-  Geocoder.encode($scope.pickup).then(res => {
-    $scope.data = res;
-    console.log("dat", $scope.data);
-  });
 
   // fetch user's position, reverse geocode the address and set it as pickup
   $scope.fetchLocation();
