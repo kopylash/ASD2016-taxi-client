@@ -6,6 +6,16 @@ const API_URL = "http://localhost:3000";
 app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
 
+  $scope.fetchLocation = function() {
+    navigator.geolocation.getCurrentPosition(response => {
+      let {latitude, longitude} = response.coords;
+
+      Geocoder.reverseEncode(latitude, longitude).then(address => {
+        $scope.order.pickup = address;
+      });
+    });
+  };
+
   $scope.showLoading = function() {
     $ionicLoading.show({
       template: 'Loading',
@@ -56,10 +66,13 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
 
   //usage example
-  Geocoder.code($scope.pickup).then(res => {
+  Geocoder.encode($scope.pickup).then(res => {
     $scope.data = res;
     console.log("dat", $scope.data);
   });
+
+  // fetch user's position, reverse geocode the address and set it as pickup
+  $scope.fetchLocation();
 
 });
 
