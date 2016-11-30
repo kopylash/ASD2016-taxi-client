@@ -20,26 +20,18 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
   $scope.showLoading = function() {
     $ionicLoading.show({
-      template: 'Loading',
-    }).then(function() {
-      // console.log("loading displayed");
-    });
+      template: '<img src="img/loading.gif" height="32" width="32" /><div>Looking for driver</div>',
+    })
   };
 
   $scope.hideLoading = function() {
-    $ionicLoading.hide().then(function() {
-      // console.log("loading hidden");
-    });
+    $ionicLoading.hide()
   };
 
   $scope.showAlert = function(message) {
-    let alertPopup = $ionicPopup.alert({
+    $ionicPopup.alert({
       title: "Woops something went wrong =(",
       template: message
-    });
-
-    alertPopup.then(function() {
-      // console.log("thanks")
     });
   };
 
@@ -67,10 +59,11 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
           dropoff_lon: $scope.order.dropoffLon
         }
       }).then(res => {
-        $scope.hideLoading();
-        console.log("result: ", res);
-        sharedOrderResponse.setResponse(res);
-        $location.path("/page2");
+        console.log("Order response:", res);
+        //todo subscribe for pusher
+        // $scope.hideLoading();
+        // sharedOrderResponse.setResponse(res);
+        // $location.path("/page2");
       }, function(error) {
         console.log(error);
         $scope.hideLoading();
