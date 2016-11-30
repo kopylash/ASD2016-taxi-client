@@ -1,16 +1,16 @@
-let app = angular.module('app.controllers', ['geocodingService', 'reverseGeocodingService']);
+let app = angular.module('app.controllers', ['geocodingService']);
 
 const API_URL = "http://localhost:3000";
 
 
-app.controller('orderARideCtrl', function($scope, Geocoder, ReverseGeocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
+app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
   $scope.order = {};
 
   $scope.fetchLocation = function() {
     navigator.geolocation.getCurrentPosition(response => {
       let {latitude, longitude} = response.coords;
 
-      ReverseGeocoder.code(latitude, longitude).then(address => {
+      Geocoder.reverseEncode(latitude, longitude).then(address => {
         $scope.order.pickup = address;
       });
     });
@@ -66,7 +66,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, ReverseGeocoder, $ht
 
 
   //usage example
-  Geocoder.code($scope.pickup).then(res => {
+  Geocoder.encode($scope.pickup).then(res => {
     $scope.data = res;
     console.log("dat", $scope.data);
   });
