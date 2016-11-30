@@ -77,6 +77,26 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
   };
 
+  $scope.get_price = function() {
+    let params = `pickup=${ $scope.order.pickup }&dropoff=${ $scope.order.dropoff }`;
+
+    $scope.price_loading = true;
+
+    $http.get([API_URL, "orders", "price"].join("/") + '?' + params)
+      .then(res => {
+        $scope.order.price = res.data.price;
+        $scope.price_text = `€ ${ res.data.price }`;
+
+        $scope.price_loading = false;
+      }).catch(error => {
+        console.log('Price loading error', error);
+
+        $scope.price_loading = false;
+      });
+  };
+
+  $scope.price_text = 'Price';
+
   // fetch user's position, reverse geocode the address and set it as pickup
   $scope.fetchLocation();
 

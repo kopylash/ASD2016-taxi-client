@@ -12,8 +12,8 @@
       <div id="orderARide-container1">
         <ion-list id="orderARide-list6">
           <ion-item class="item-icon-left item-icon-right" id="orderARide-list-item13" style="">
-            <i class="icon ion-cash"></i>Price
-            <i class="icon ion-android-refresh"></i>
+            <i class="icon ion-cash"></i>{{ price_text }}
+            <i class="icon ion-android-refresh" ng-click="get_price()" ng-class="{loading: price_loading}"></i>
           </ion-item>
         </ion-list>
       </div>
