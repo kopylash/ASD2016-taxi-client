@@ -9,7 +9,8 @@ var geocodingService = angular.module('geocodingService', [])
         return $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
           address + '&key=AIzaSyAfld3OudxkQe5f3nKul7gIUxPp4FSbwpE') //todo move to constants and inject trough values
           .then(res => {
-            return res.data;
+            console.log(res.data.results);
+            return res.data.results[0];
           })
       }
 
