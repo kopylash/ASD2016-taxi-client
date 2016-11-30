@@ -66,7 +66,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, $http) {
   $scope.orderInfo = sharedOrderResponse.getResponse();
 
-  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.id].join("/")).then(res => {
+  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.driver_id].join("/")).then(res => {
     $scope.driverInfo = res;
     console.log($scope.driverInfo);
   }, function(error) {
