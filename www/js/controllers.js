@@ -85,7 +85,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
     $http.get([API_URL, "orders", "price"].join("/") + '?' + params)
       .then(res => {
         $scope.order.price = res.data.price;
-        $scope.price_text = `€ ${ res.data.price }`;
+        $scope.price_text = `€ ${ res.data.price } (${res.data.distance/1000} km)`;
 
         $scope.price_loading = false;
       }).catch(error => {
@@ -93,6 +93,30 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
         $scope.price_loading = false;
       });
+  };
+
+  $scope.geocodePickup = function() {
+    if($scope.order.pickup && $scope.order.pickup.length > 3 ){
+      setTimeout(function() {
+        Geocoder.encode($scope.order.pickup).then(geodata => {
+          $scope.order.pickup = geodata.formatted_address;
+          $scope.order.pickupLat = geodata.geometry.location.lat;
+          $scope.order.pickupLon = geodata.geometry.location.lng;
+        });
+      },3000);
+    }
+  };
+
+  $scope.geocodeDropoff = function() {
+    if($scope.order.dropoff && $scope.order.dropoff.length > 3 ){
+      setTimeout(function() {
+        Geocoder.encode($scope.order.dropoff).then(geodata => {
+          $scope.order.dropoff = geodata.formatted_address;
+          $scope.order.dropoffLat = geodata.geometry.location.lat;
+          $scope.order.dropoffLon = geodata.geometry.location.lng;
+        });
+      },3000);
+    }
   };
 
   $scope.price_text = 'Price';
