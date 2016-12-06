@@ -7,41 +7,21 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-  
 
-      .state('orderARide', {
-    url: '/page1',
+    .state('orderARide', {
+    url: '/new',
     templateUrl: 'templates/orderARide.html',
     controller: 'orderARideCtrl'
   })
 
   .state('rideInfo', {
-    url: '/page2',
+    url: '/info',
     templateUrl: 'templates/rideInfo.html',
     controller: 'rideInfoCtrl'
-  })
+  });
 
-  .state('newOrder', {
-    url: '/page3',
-    templateUrl: 'templates/newOrder.html',
-    controller: 'newOrderCtrl'
-  })
+$urlRouterProvider.otherwise('/new')
 
-  .state('currentOrder', {
-    url: '/page4',
-    templateUrl: 'templates/currentOrder.html',
-    controller: 'currentOrderCtrl'
-  })
 
-  .state('orderHistory', {
-    url: '/page5',
-    templateUrl: 'templates/orderHistory.html',
-    controller: 'orderHistoryCtrl'
-  })
-
-$urlRouterProvider.otherwise('/page1')
-
-  
 
 });
