@@ -47,6 +47,18 @@
         list-style-type: decimal;
         padding-left:40px;
       }
+      @keyframes rotate {
+        from {
+          transform: rotate(0turn);
+        }
+        to {
+          transform: rotate(1turn);
+        }
+      }
+
+      .icon.loading {
+        animation: rotate 1s linear infinite;
+      }
     </style>
 
     <script src="js/geocodingAPI.js"></script>

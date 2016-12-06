@@ -3,17 +3,17 @@
     <form id="orderARide-form2" class="list">
       <label class="item item-input item-stacked-label" id="orderARide-input3">
         <span class="input-label">Pickup location</span>
-        <input ng-model="order.pickup" placeholder="Liivi 2, Tartu" type="text">
+        <input ng-model="order.pickup" placeholder="Liivi 2, Tartu" type="text" ng-change="geocodePickup()">
       </label>
       <label class="item item-input item-stacked-label" id="orderARide-input4">
         <span class="input-label">Destination</span>
-        <input ng-model="order.dropoff" placeholder="Raatuse 22" type="text">
+        <input ng-model="order.dropoff" placeholder="Raatuse 22" type="text" ng-change="geocodeDropoff()">
       </label>
       <div id="orderARide-container1">
         <ion-list id="orderARide-list6">
-          <ion-item class="item-icon-left item-icon-right" id="orderARide-list-item13" style="">
-            <i class="icon ion-cash"></i>Price
-            <i class="icon ion-android-refresh"></i>
+          <ion-item class="item-icon-left item-icon-right" id="orderARide-list-oitem13" style="">
+            <i class="icon ion-cash"></i>{{ price_text }}
+            <i class="icon ion-android-refresh" ng-click="get_price()" ng-class="{loading: price_loading}"></i>
           </ion-item>
         </ion-list>
       </div>
