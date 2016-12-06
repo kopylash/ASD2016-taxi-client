@@ -40,12 +40,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
     $scope.showLoading();
 
-    Geocoder.encode($scope.order.dropoff).then(geodata => {
-      $scope.order.dropoff = geodata.formatted_address;
-      $scope.order.dropoffLat = geodata.geometry.location.lat;
-      $scope.order.dropoffLon = geodata.geometry.location.lng;
-
-      console.log('BEFORE', $scope.order);
+      //console.log('BEFORE', $scope.order);
 
       $http.post([API_URL, "orders"].join("/"), {
         order: {
@@ -69,13 +64,8 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
         $scope.hideLoading();
         $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
       });
-    }).catch(error => {
-      console.log('Geocoding error', error);
-      $scope.hideLoading();
-      $scope.showAlert('Dropoff address is not correct');
-    });
+    };
 
-  };
 
   $scope.get_price = function() {
     let params = `pickup=${ $scope.order.pickup }&dropoff=${ $scope.order.dropoff }`;
