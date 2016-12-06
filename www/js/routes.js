@@ -18,7 +18,13 @@ angular.module('app.routes', [])
     url: '/info',
     templateUrl: 'templates/rideInfo.html',
     controller: 'rideInfoCtrl'
-  });
+  })
+
+    .state('map', {
+      url: '/map',
+      templateUrl: 'templates/map.html',
+      controller: 'mapCtrl'
+    })
 
 $urlRouterProvider.otherwise('/new')
 

@@ -3,12 +3,14 @@ let app = angular.module('app.controllers', ['geocodingService']);
 const API_URL = "http://localhost:3000";
 
 
-app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse) {
+app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, sharedOrderResponse, sharedCurrentLocation) {
   $scope.order = {};
 
   $scope.fetchLocation = function() {
     navigator.geolocation.getCurrentPosition(response => {
       let {latitude, longitude} = response.coords;
+
+      sharedCurrentLocation.setCurrentLocation(response.coords);
 
       Geocoder.reverseEncode(latitude, longitude).then(address => {
         $scope.order.pickup = address;
@@ -40,33 +42,33 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
     $scope.showLoading();
 
-      //console.log('BEFORE', $scope.order);
+    //console.log('BEFORE', $scope.order);
 
-      $http.post([API_URL, "orders"].join("/"), {
-        order: {
-          pickup_address: $scope.order.pickup,
-          dropoff_address: $scope.order.dropoff,
-          client_name: $scope.order.name,
-          phone: $scope.order.phoneNumber,
-          pickup_lat: $scope.order.pickupLat,
-          pickup_lon: $scope.order.pickupLon,
-          dropoff_lat: $scope.order.dropoffLat,
-          dropoff_lon: $scope.order.dropoffLon,
-          price: $scope.order.price,
-          distance: $scope.order.distance
-        }
-      }).then(res => {
-        console.log("Order response:", res);
-        //todo subscribe for pusher
-        // $scope.hideLoading();
-        // sharedOrderResponse.setResponse(res);
-        // $location.path("/page2");
-      }, function(error) {
-        console.log(error);
-        $scope.hideLoading();
-        $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
-      });
-    };
+    $http.post([API_URL, "orders"].join("/"), {
+      order: {
+        pickup_address: $scope.order.pickup,
+        dropoff_address: $scope.order.dropoff,
+        client_name: $scope.order.name,
+        phone: $scope.order.phoneNumber,
+        pickup_lat: $scope.order.pickupLat,
+        pickup_lon: $scope.order.pickupLon,
+        dropoff_lat: $scope.order.dropoffLat,
+        dropoff_lon: $scope.order.dropoffLon,
+        price: $scope.order.price,
+        distance: $scope.order.distance
+      }
+    }).then(res => {
+      console.log("Order response:", res);
+      //todo subscribe for pusher
+      // $scope.hideLoading();
+      // sharedOrderResponse.setResponse(res);
+      // $location.path("/page2");
+    }, function(error) {
+      console.log(error);
+      $scope.hideLoading();
+      $scope.showAlert(error.statusText === "" ? "Can't send request to server" : error.statusText);
+    });
+  };
 
 
   $scope.get_price = function() {
@@ -78,37 +80,37 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
       .then(res => {
         $scope.order.price = res.data.price;
         $scope.order.distance = res.data.distance;
-        $scope.price_text = `€ ${ res.data.price } (${res.data.distance/1000} km)`;
+        $scope.price_text = `€ ${ res.data.price } (${res.data.distance / 1000} km)`;
 
         $scope.price_loading = false;
       }).catch(error => {
-        console.log('Price loading error', error);
+      console.log('Price loading error', error);
 
-        $scope.price_loading = false;
-      });
+      $scope.price_loading = false;
+    });
   };
 
   $scope.geocodePickup = function() {
-    if($scope.order.pickup && $scope.order.pickup.length > 3 ){
+    if ($scope.order.pickup && $scope.order.pickup.length > 3) {
       setTimeout(function() {
         Geocoder.encode($scope.order.pickup).then(geodata => {
           $scope.order.pickup = geodata.formatted_address;
           $scope.order.pickupLat = geodata.geometry.location.lat;
           $scope.order.pickupLon = geodata.geometry.location.lng;
         });
-      },3000);
+      }, 3000);
     }
   };
 
   $scope.geocodeDropoff = function() {
-    if($scope.order.dropoff && $scope.order.dropoff.length > 3 ){
+    if ($scope.order.dropoff && $scope.order.dropoff.length > 3) {
       setTimeout(function() {
         Geocoder.encode($scope.order.dropoff).then(geodata => {
           $scope.order.dropoff = geodata.formatted_address;
           $scope.order.dropoffLat = geodata.geometry.location.lat;
           $scope.order.dropoffLon = geodata.geometry.location.lng;
         });
-      },3000);
+      }, 3000);
     }
   };
 
@@ -128,4 +130,19 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
   }, function(error) {
     console.log(error);
   })
+});
+
+app.controller('mapCtrl', function($scope, $state, $location, Geocoder, sharedCurrentLocation) {
+  var location = sharedCurrentLocation.getCurrentLocation();
+
+  var latLng = new google.maps.LatLng(location.latitude, location.longitude);
+
+  var mapOptions = {
+    center: latLng,
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+  $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
 });

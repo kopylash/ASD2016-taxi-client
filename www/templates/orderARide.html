@@ -4,6 +4,9 @@
       <label class="item item-input item-stacked-label" id="orderARide-input3">
         <span class="input-label">Pickup location</span>
         <input ng-model="order.pickup" placeholder="Liivi 2, Tartu" type="text" ng-change="geocodePickup()">
+        <div class="item-icon-right">
+          <a class="icon ion-map" ng-href="/#/map"></a>
+        </div>
       </label>
       <label class="item item-input item-stacked-label" id="orderARide-input4">
         <span class="input-label">Destination</span>

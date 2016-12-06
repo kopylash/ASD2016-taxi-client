@@ -19,4 +19,16 @@ angular.module('app.services', [])
         response = res;
       }
     }
+  })
+
+  .service('sharedCurrentLocation', function(){
+    let currentLocation = {};
+    return {
+      getCurrentLocation: function(){
+        return currentLocation;
+      },
+      setCurrentLocation: function(location){
+        currentLocation = location;
+      }
+    }
   });
