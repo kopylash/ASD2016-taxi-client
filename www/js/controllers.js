@@ -51,7 +51,9 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
           pickup_lat: $scope.order.pickupLat,
           pickup_lon: $scope.order.pickupLon,
           dropoff_lat: $scope.order.dropoffLat,
-          dropoff_lon: $scope.order.dropoffLon
+          dropoff_lon: $scope.order.dropoffLon,
+          price: $scope.order.price,
+          distance: $scope.order.distance
         }
       }).then(res => {
         console.log("Order response:", res);
@@ -75,6 +77,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
     $http.get([API_URL, "orders", "price"].join("/") + '?' + params)
       .then(res => {
         $scope.order.price = res.data.price;
+        $scope.order.distance = res.data.distance;
         $scope.price_text = `€ ${ res.data.price } (${res.data.distance/1000} km)`;
 
         $scope.price_loading = false;
