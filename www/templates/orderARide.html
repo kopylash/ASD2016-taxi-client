@@ -4,10 +4,16 @@
       <label class="item item-input item-stacked-label" id="orderARide-input3">
         <span class="input-label">Pickup location</span>
         <input ng-model="order.pickup" placeholder="Liivi 2, Tartu" type="text" ng-change="geocodePickup()">
+        <div class="item-icon-right">
+          <a class="icon ion-map" ng-href="/#/map?field=pickup" ></a>
+        </div>
       </label>
       <label class="item item-input item-stacked-label" id="orderARide-input4">
         <span class="input-label">Destination</span>
         <input ng-model="order.dropoff" placeholder="Raatuse 22" type="text" ng-change="geocodeDropoff()">
+        <div class="item-icon-right">
+          <a class="icon ion-map" ng-href="/#/map?field=dropoff" ></a>
+        </div>
       </label>
       <div id="orderARide-container1">
         <ion-list id="orderARide-list6">

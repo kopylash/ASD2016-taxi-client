@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
-
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyAfld3OudxkQe5f3nKul7gIUxPp4FSbwpE&sensor=true"></script>
 
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
@@ -58,6 +58,48 @@
 
       .icon.loading {
         animation: rotate 1s linear infinite;
+      }
+
+      #map {
+        width: 100%;
+        height: 88%;
+      }
+
+      .scroll {
+        height: 100%;
+      }
+
+      #centerInfoBubble {
+        position: absolute;
+        /*center the marker*/
+        top: 38%;
+        left: 22.5%;
+        z-index: 1;
+        width: 50%;
+        height: 6%;
+        border-radius: 20px;
+        border: 1px solid #111;
+        background-color: #444444;
+        color: #fff;
+        padding: 0.5% 5%;
+        cursor: pointer;
+      }
+      #centerMarker {
+        position: absolute;
+        /*url of the marker*/
+        background: url(http://maps.gstatic.com/mapfiles/markers2/marker.png) no-repeat;
+        /*center the marker*/
+        top: 45%;
+        left: 45%;
+        z-index: 1;
+        height: 10%;
+        width: 10%;
+        cursor: pointer;
+      }
+
+      #map-button1 {
+        height:8% !important;
+        width:100% !important;
       }
     </style>
 
