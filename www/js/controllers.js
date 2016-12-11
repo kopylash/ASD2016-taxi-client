@@ -173,19 +173,7 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
   $scope.fetchLocation = function() {
     navigator.geolocation.getCurrentPosition(response => {
       Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(address => {
-        $scope.fetchedAddress = address;
-        latLng = new google.maps.LatLng(response.coords.latitude, response.coords.longitude);
-        mapOptions = {
-          center: latLng,
-          zoom: 15,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        $scope.mapCtrl = {
-          coordinates: response.coords.latitude + "," + response.coords.longitude,
-          address: $scope.fetchedAddress
-        };
-        $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        $scope.infoBox();
+        $scope.drawMap(response.coords.latitude,response.coords.longitude,address);
       });
     });
   };
