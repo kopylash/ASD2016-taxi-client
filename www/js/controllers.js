@@ -1,18 +1,19 @@
-let app = angular.module('app.controllers', ['geocodingService']);
+var app = angular.module('app.controllers', ['geocodingService']);
 
-const API_URL = "http://localhost:3000";
+var API_URL = "http://localhost:3000";
 
 
 app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup,$rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation) {
   $scope.order = {};
 
   $scope.fetchLocation = function() {
-    navigator.geolocation.getCurrentPosition(response => {
-      let {latitude, longitude} = response.coords;
+    navigator.geolocation.getCurrentPosition(function(response) {
+      var latitude = response.coords.latitude,
+          longitude = response.coords.longitude;
 
       sharedCurrentLocation.setCurrentLocation(response.coords);
 
-      Geocoder.reverseEncode(latitude, longitude).then(address => {
+      Geocoder.reverseEncode(latitude, longitude).then(function(address) {
         $scope.order.pickup = address;
         $scope.order.pickupLat = latitude;
         $scope.order.pickupLon = longitude;
@@ -58,7 +59,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
         price: $scope.order.price,
         distance: $scope.order.distance
       }
-    }).then(res => {
+    }).then(function(res) {
       console.log("Order response:", res);
       //todo subscribe for pusher
       // $scope.hideLoading();
@@ -73,18 +74,18 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 
 
   $scope.get_price = function() {
-    let params = `pickup=${ $scope.order.pickup }&dropoff=${ $scope.order.dropoff }`;
+    var params = 'pickup=' + $scope.order.pickup + '&dropoff=' + $scope.order.dropoff;
 
     $scope.price_loading = true;
 
     $http.get([API_URL, "orders", "price"].join("/") + '?' + params)
-      .then(res => {
-        $scope.order.price = res.data.price;
-        $scope.order.distance = res.data.distance;
-        $scope.price_text = `€ ${ res.data.price } (${res.data.distance / 1000} km)`;
+    .then(function(res) {
+      $scope.order.price = res.data.price;
+      $scope.order.distance = res.data.distance;
+      $scope.price_text = '€ ' + res.data.price + ' (' + res.data.distance / 1000 + ' km)';
 
-        $scope.price_loading = false;
-      }).catch(error => {
+      $scope.price_loading = false;
+    }).catch(function(error) {
       console.log('Price loading error', error);
 
       $scope.price_loading = false;
@@ -94,7 +95,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
   $scope.geocodePickup = function() {
     if ($scope.order.pickup && $scope.order.pickup.length > 3) {
       setTimeout(function() {
-        Geocoder.encode($scope.order.pickup).then(geodata => {
+        Geocoder.encode($scope.order.pickup).then(function(geodata) {
           $scope.order.pickup = geodata.formatted_address;
           $scope.order.pickupLat = geodata.geometry.location.lat;
           $scope.order.pickupLon = geodata.geometry.location.lng;
@@ -106,7 +107,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
   $scope.geocodeDropoff = function() {
     if ($scope.order.dropoff && $scope.order.dropoff.length > 3) {
       setTimeout(function() {
-        Geocoder.encode($scope.order.dropoff).then(geodata => {
+        Geocoder.encode($scope.order.dropoff).then(function(geodata) {
           $scope.order.dropoff = geodata.formatted_address;
           $scope.order.dropoffLat = geodata.geometry.location.lat;
           $scope.order.dropoffLon = geodata.geometry.location.lng;
@@ -137,7 +138,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
 app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, $http) {
   $scope.orderInfo = sharedOrderResponse.getResponse();
 
-  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.driver_id].join("/")).then(res => {
+  $http.get([API_URL, "drivers", $scope.orderInfo.data.order.driver_id].join("/")).then(function(res) {
     $scope.driverInfo = res;
     console.log($scope.driverInfo);
   }, function(error) {
@@ -174,7 +175,7 @@ app.controller('mapCtrl', function($scope, $state, $location,$compile ,$rootScop
       $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
        lat = $scope.mapCtrl.coordinates.split(",")[0];
        lon = $scope.mapCtrl.coordinates.split(",")[1];
-      Geocoder.reverseEncode(lat,lon).then(address => {
+      Geocoder.reverseEncode(lat,lon).then(function(address) {
         $scope.mapCtrl.address = address;
         $scope.$evalAsync();
       });
