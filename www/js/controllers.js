@@ -3,7 +3,7 @@ let app = angular.module('app.controllers', ['geocodingService']);
 const API_URL = "http://localhost:3000";
 
 
-app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup,$rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation) {
+app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation) {
   $scope.order = {};
 
   $scope.fetchLocation = function() {
@@ -116,9 +116,9 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
   };
 
   $rootScope.$on('pickupChanged', function() {
-     $scope.order.pickup =  sharedPickupDropoffLocation.getPDAddress();
-     $scope.order.pickupLat = sharedPickupDropoffLocation.getLat();
-     $scope.order.pickupLon = sharedPickupDropoffLocation.getLon();
+    $scope.order.pickup = sharedPickupDropoffLocation.getPDAddress();
+    $scope.order.pickupLat = sharedPickupDropoffLocation.getLat();
+    $scope.order.pickupLon = sharedPickupDropoffLocation.getLon();
   });
 
   $rootScope.$on('dropoffChanged', function() {
@@ -145,48 +145,55 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
   })
 });
 
-app.controller('mapCtrl', function($scope, $state, $location,$compile ,$rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation) {
+app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation) {
 
-  var location = sharedCurrentLocation.getCurrentLocation();
-
-  var lat =location.latitude;
-  var lon = location.longitude;
-
-  $scope.mapCtrl = {
-    coordinates: location,
-    address: sharedCurrentLocation.getCurrentAddress()
-  };
-
-  var latLng = new google.maps.LatLng(location.latitude, location.longitude);
-
-  var mapOptions = {
-    center: latLng,
-    zoom: 15,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-
-  $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
-
-  google.maps.event.addListenerOnce($scope.map,'idle', function() {
-
-    google.maps.event.addListener($scope.map, "dragend", function() {
-      $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
-       lat = $scope.mapCtrl.coordinates.split(",")[0];
-       lon = $scope.mapCtrl.coordinates.split(",")[1];
-      Geocoder.reverseEncode(lat,lon).then(address => {
-        $scope.mapCtrl.address = address;
-        $scope.$evalAsync();
+  var lat;
+  var lon;
+  var latLng;
+  var mapOptions;
+  $scope.fetchLocation = function() {
+    navigator.geolocation.getCurrentPosition(response => {
+      //console.log(response.coords.latitude);
+      Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(address => {
+        $scope.fetchedAddress = address;
+        console.log("from scope");
+        latLng = new google.maps.LatLng(response.coords.latitude, response.coords.longitude);
+        mapOptions = {
+          center: latLng,
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        $scope.mapCtrl = {
+          coordinates: response.coords.latitude + "," + response.coords.longitude,
+          address: $scope.fetchedAddress
+        };
+        $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        $scope.infoBox();
       });
     });
+  };
 
-  });
+  $scope.infoBox = function() {
+    google.maps.event.addListenerOnce($scope.map, 'idle', function() {
+
+      google.maps.event.addListener($scope.map, "dragend", function() {
+        $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
+        lat = $scope.mapCtrl.coordinates.split(",")[0];
+        lon = $scope.mapCtrl.coordinates.split(",")[1];
+        Geocoder.reverseEncode(lat, lon).then(address => {
+          $scope.mapCtrl.address = address;
+          $scope.$evalAsync();
+        });
+      });
+
+    });
+  };
 
   $scope.mapPicker = function() {
     sharedPickupDropoffLocation.setLat(lat);
     sharedPickupDropoffLocation.setLon(lon);
     sharedPickupDropoffLocation.setPDAddress($scope.mapCtrl.address);
-    if($location.$$absUrl.split("field=")[1] == 'pickup'){
+    if ($location.$$absUrl.split("field=")[1] == 'pickup') {
       $rootScope.$broadcast('pickupChanged');
     }
     else {
@@ -194,5 +201,27 @@ app.controller('mapCtrl', function($scope, $state, $location,$compile ,$rootScop
     }
     $location.path("/new");
   };
+
+  var location = sharedCurrentLocation.getCurrentLocation();
+
+
+  if (location.latitude && location.longitude) {
+    latLng = new google.maps.LatLng(location.latitude, location.longitude);
+    console.log("from main");
+    mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    $scope.mapCtrl = {
+      coordinates: location,
+      address: sharedCurrentLocation.getCurrentAddress()
+    };
+    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $scope.infoBox();
+  }
+  else {
+    $scope.fetchLocation();
+  }
 
 });
