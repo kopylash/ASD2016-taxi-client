@@ -177,7 +177,7 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
   var mapOptions;
 
   $scope.fetchLocation = function() {
-    navigator.geolocation.getCurrentPosition(response => {
+    navigator.geolocation.getCurrentPosition(function(response) {
       Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(function(address ) {
         $scope.drawMap(response.coords.latitude, response.coords.longitude, address);
       });
