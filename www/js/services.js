@@ -44,11 +44,18 @@ angular.module('app.services', [])
     var latitude = 0;
     var longtitude = 0;
     var address = "";
-    return{
+    var droppOffLat =0;
+    var dropOffLon = 0;
+    var dropOffAdr ="";
+    var pickupLat =0;
+    var pickupLon =0;
+    var pickupAdr ="";
+    var nextChange;
+    return {
       getLat: function() {
         return latitude
       },
-      setLat: function(lat){
+      setLat: function(lat) {
         latitude = lat
       },
       getLon: function() {
@@ -57,11 +64,53 @@ angular.module('app.services', [])
       setLon: function(lon) {
         longtitude = lon
       },
-      getPDAddress: function(){
+      getPDAddress: function() {
         return address
       },
       setPDAddress: function(adr) {
         address = adr
+      },
+      getDropOffLat: function() {
+        return droppOffLat
+      },
+      setDropOffLat: function(lat) {
+        droppOffLat = lat
+      },
+      getDropOffLon: function() {
+        return dropOffLon
+      },
+      setDropOffLon: function(lon) {
+        dropOffLon = lon
+      },
+      getdropOffAdr: function() {
+        return dropOffAdr
+      },
+      setDropOffAdr: function(adr) {
+        dropOffAdr = adr
+      },
+      getPickupLat: function() {
+        return pickupLat
+      },
+      setPickupLat: function(lat) {
+        pickupLat = lat
+      },
+      getPickupLon: function() {
+        return pickupLon
+      },
+      setPickupLon: function(lon) {
+        pickupLon = lon
+      },
+      getPickupAdr: function() {
+        return pickupAdr
+      },
+      setPickupAdr: function(adr) {
+        pickupAdr = adr
+      },
+      getNextChange: function() {
+        return nextChange
+      },
+      setNextChange: function(change) {
+        nextChange = change
       }
     }
   });
