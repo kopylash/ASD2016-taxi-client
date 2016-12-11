@@ -4,7 +4,7 @@ var API_URL = "http://localhost:3000";
 
 
 app.controller('orderARideCtrl',
-  function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService) {
+  function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService, $ionicNavBarDelegate) {
     $scope.order = {};
 
     $scope.fetchLocation = function() {
@@ -137,9 +137,11 @@ app.controller('orderARideCtrl',
 // fetch user's position, reverse geocode the address and set it as pickup
     $scope.fetchLocation();
 
+    $ionicNavBarDelegate.showBackButton(false);
+
   });
 
-app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse) {
+app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, $ionicNavBarDelegate) {
   var data = sharedOrderResponse.getResponse();
   if (data) {
     $scope.orderInfo = data.order;
@@ -147,14 +149,17 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
   }
 
   //todo subscribe for order finish
+  $ionicNavBarDelegate.showBackButton(false);
 });
 
-app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation) {
+app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation, $ionicNavBarDelegate) {
 
   var location = sharedCurrentLocation.getCurrentLocation();
 
   var lat = location.latitude;
   var lon = location.longitude;
+
+  $ionicNavBarDelegate.showBackButton(true);
 
   $scope.mapCtrl = {
     coordinates: location,
