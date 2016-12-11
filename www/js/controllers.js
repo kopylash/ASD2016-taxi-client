@@ -100,7 +100,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
           sharedPickupDropoffLocation.setPickupLon($scope.order.pickupLon);
           sharedPickupDropoffLocation.setPickupLat($scope.order.pickupLat);
         });
-      }, 3000);
+      }, 1500);
     }
   };
 
@@ -115,7 +115,7 @@ app.controller('orderARideCtrl', function($scope, Geocoder, $http, $location, $i
           sharedPickupDropoffLocation.setDropOffLon($scope.order.dropoffLon);
           sharedPickupDropoffLocation.setDropOffLat($scope.order.dropoffLat);
         });
-      }, 3000);
+      }, 1500);
     }
   };
 
@@ -173,7 +173,7 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
   $scope.fetchLocation = function() {
     navigator.geolocation.getCurrentPosition(response => {
       Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(address => {
-        $scope.drawMap(response.coords.latitude,response.coords.longitude,address);
+        $scope.drawMap(response.coords.latitude, response.coords.longitude, address);
       });
     });
   };
@@ -235,10 +235,10 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
 
   var nextChange = sharedPickupDropoffLocation.getNextChange();
 
-  if(pickupAdr && pickupLat && pickupLon && nextChange=="pickup"){
+  if (pickupAdr && pickupLat && pickupLon && nextChange == "pickup") {
     $scope.drawMap(pickupLat, pickupLon, pickupAdr);
   }
-  else if (dropOffAdr && dropOffLat && dropOffLon && nextChange=="dropoff") {
+  else if (dropOffAdr && dropOffLat && dropOffLon && nextChange == "dropoff") {
     $scope.drawMap(dropOffLat, dropOffLon, dropOffAdr);
   }
   else if (location.latitude && location.longitude) {
