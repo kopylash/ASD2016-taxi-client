@@ -1,23 +1,23 @@
 <ion-view title="Ride info" id="page2" style="">
   <ion-content padding="true" class="has-header">
     <ion-list id="rideInfo-list2">
-      <ion-item id="rideInfo-list-item2" style="">From: {{orderInfo.data.order.pickup_address}}</ion-item>
-      <ion-item id="rideInfo-list-item3" style="">To: {{orderInfo.data.order.dropoff_address}}</ion-item>
+      <ion-item id="rideInfo-list-item2" style="">From: {{orderInfo.pickup_address}}</ion-item>
+      <ion-item id="rideInfo-list-item3" style="">To: {{orderInfo.dropoff_address}}</ion-item>
       <ion-item class="item-icon-left" id="rideInfo-list-item4" style="">
-        <i class="icon ion-arrow-graph-up-right"></i>{{orderInfo.data.order.distance}}</ion-item>
+        <i class="icon ion-arrow-graph-up-right"></i>{{orderInfo.distance}}</ion-item>
       <ion-item class="item-icon-left" id="rideInfo-list-item5" style="">
-        <i class="icon ion-cash"></i>{{orderInfo.data.order.price}}</ion-item>
+        <i class="icon ion-cash"></i>{{orderInfo.price}} €</ion-item>
+      <ion-item class="item-icon-left" id="rideInfo-list-item12" style="">
+        <i class="icon ion-clock"></i>{{orderInfo.travelTime}}</ion-item>
     </ion-list>
     <h4 id="rideInfo-heading1" style="color: rgb(0, 0, 0);">Taxi</h4>
     <ion-list id="rideInfo-list3">
       <ion-item class="item-icon-left" id="rideInfo-list-item9" ui-sref="newOrder" style="">
-        <i class="icon ion-android-person"></i>{{driverInfo.data.driver.name}}</ion-item>
+        <i class="icon ion-android-person"></i>{{driverInfo.name}}</ion-item>
       <ion-item class="item-icon-left" id="rideInfo-list-item10" style="">
-        <i class="icon ion-android-car"></i>{{driverInfo.data.driver.car_model}}</ion-item>
+        <i class="icon ion-android-car"></i>{{driverInfo.car_model}}</ion-item>
       <ion-item class="item-icon-left" id="rideInfo-list-item11" style="">
-        <i class="icon ion-ios-telephone"></i>{{driverInfo.data.driver.phone}}</ion-item>
-      <ion-item class="item-icon-left" id="rideInfo-list-item12" style="">
-        <i class="icon ion-clock"></i>{{orderInfo.data.order.travelTime}}</ion-item>
+        <i class="icon ion-ios-telephone"></i>{{driverInfo.phone}}</ion-item>
     </ion-list>
   </ion-content>
 </ion-view>

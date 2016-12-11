@@ -21,14 +21,14 @@ angular.module('app.services', [])
     }
   })
 
-  .service('sharedCurrentLocation', function(){
+  .service('sharedCurrentLocation', function() {
     let currentLocation = {};
     var address = "";
     return {
-      getCurrentLocation: function(){
+      getCurrentLocation: function() {
         return currentLocation;
       },
-      setCurrentLocation: function(location){
+      setCurrentLocation: function(location) {
         currentLocation = location;
       },
       getCurrentAddress: function() {
@@ -44,11 +44,11 @@ angular.module('app.services', [])
     var latitude = 0;
     var longtitude = 0;
     var address = "";
-    return{
+    return {
       getLat: function() {
         return latitude
       },
-      setLat: function(lat){
+      setLat: function(lat) {
         latitude = lat
       },
       getLon: function() {
@@ -57,13 +57,19 @@ angular.module('app.services', [])
       setLon: function(lon) {
         longtitude = lon
       },
-      getPDAddress: function(){
+      getPDAddress: function() {
         return address
       },
       setPDAddress: function(adr) {
         address = adr
       }
     }
-  });
+  })
 
+  .service('PusherService', function() {
+    var pusher = new Pusher('49d687ce69d0caf32b29', {
+      encrypted: true
+    });
+    return pusher;
+  });
 
