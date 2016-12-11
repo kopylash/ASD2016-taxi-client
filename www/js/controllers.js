@@ -61,13 +61,23 @@ app.controller('orderARideCtrl',
       }).then(function(res) {
         console.log("Order response:", res);
         var channel = PusherService.subscribe($scope.order.phoneNumber);
+
+        //subscribe for order acceptance
         channel.bind('order_accepted', function(orderData) {
           console.log("push received", orderData);
           $scope.hideLoading();
           sharedOrderResponse.setResponse(orderData);
           $location.path("/info");
           $scope.$apply();
+        });
 
+        //subscribe for order finish
+        channel.bind('order_completed', function(msg) {
+          console.log("completed", msg);
+          sharedOrderResponse.setResponse({});
+          $location.path("/new");
+          $scope.order = {};
+          $scope.$apply();
         });
       }, function(error) {
         console.log(error);
@@ -139,14 +149,12 @@ app.controller('orderARideCtrl',
 
   });
 
-app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse) {
+app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, PusherService) {
   var data = sharedOrderResponse.getResponse();
   if (data) {
     $scope.orderInfo = data.order;
     $scope.driverInfo = data.driver;
   }
-
-  //todo subscribe for order finish
 });
 
 app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation) {
