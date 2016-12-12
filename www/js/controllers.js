@@ -214,7 +214,7 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
   $ionicNavBarDelegate.showBackButton(false);
 });
 
-app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation, $ionicNavBarDelegate) {
+app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Framework, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation, $ionicNavBarDelegate) {
 
   var lat;
   var lon;
