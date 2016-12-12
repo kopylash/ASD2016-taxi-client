@@ -61,13 +61,23 @@ app.controller('orderARideCtrl',
       }).then(function(res) {
         console.log("Order response:", res);
         var channel = PusherService.subscribe($scope.order.phoneNumber);
+
+        //subscribe for order acceptance
         channel.bind('order_accepted', function(orderData) {
           console.log("push received", orderData);
           $scope.hideLoading();
           sharedOrderResponse.setResponse(orderData);
           $location.path("/info");
           $scope.$apply();
+        });
 
+        //subscribe for order finish
+        channel.bind('order_completed', function(msg) {
+          console.log("completed", msg);
+          sharedOrderResponse.setResponse({});
+          $location.path("/new");
+          $scope.order = {};
+          $scope.$apply();
         });
       }, function(error) {
         console.log(error);
@@ -103,10 +113,14 @@ app.controller('orderARideCtrl',
             $scope.order.pickup = geodata.formatted_address;
             $scope.order.pickupLat = geodata.geometry.location.lat;
             $scope.order.pickupLon = geodata.geometry.location.lng;
+            sharedPickupDropoffLocation.setPickupAdr($scope.order.pickup);
+            sharedPickupDropoffLocation.setPickupLon($scope.order.pickupLon);
+            sharedPickupDropoffLocation.setPickupLat($scope.order.pickupLat);
           });
-        }, 3000);
+        }, 1500);
       }
     };
+
 
     $scope.geocodeDropoff = function() {
       if ($scope.order.dropoff && $scope.order.dropoff.length > 3) {
@@ -115,27 +129,43 @@ app.controller('orderARideCtrl',
             $scope.order.dropoff = geodata.formatted_address;
             $scope.order.dropoffLat = geodata.geometry.location.lat;
             $scope.order.dropoffLon = geodata.geometry.location.lng;
+            sharedPickupDropoffLocation.setDropOffAdr($scope.order.dropoff);
+            sharedPickupDropoffLocation.setDropOffLon($scope.order.dropoffLon);
+            sharedPickupDropoffLocation.setDropOffLat($scope.order.dropoffLat);
           });
-        }, 3000);
+        }, 1500);
       }
     };
 
-    $rootScope.$on('pickupChanged', function() {
-      $scope.order.pickup = sharedPickupDropoffLocation.getPDAddress();
-      $scope.order.pickupLat = sharedPickupDropoffLocation.getLat();
-      $scope.order.pickupLon = sharedPickupDropoffLocation.getLon();
-    });
+  $rootScope.$on('pickupChanged', function() {
+    $scope.order.pickup = sharedPickupDropoffLocation.getPDAddress();
+    $scope.order.pickupLat = sharedPickupDropoffLocation.getLat();
+    $scope.order.pickupLon = sharedPickupDropoffLocation.getLon();
+    sharedPickupDropoffLocation.setPickupAdr($scope.order.pickup);
+    sharedPickupDropoffLocation.setPickupLat($scope.order.pickupLat);
+    sharedPickupDropoffLocation.setPickupLon($scope.order.pickupLon);
+  });
 
-    $rootScope.$on('dropoffChanged', function() {
-      $scope.order.dropoff = sharedPickupDropoffLocation.getPDAddress();
-      $scope.order.dropoffLat = sharedPickupDropoffLocation.getLat();
-      $scope.order.dropoffLon = sharedPickupDropoffLocation.getLon();
-    });
+  $rootScope.$on('dropoffChanged', function() {
+    $scope.order.dropoff = sharedPickupDropoffLocation.getPDAddress();
+    $scope.order.dropoffLat = sharedPickupDropoffLocation.getLat();
+    $scope.order.dropoffLon = sharedPickupDropoffLocation.getLon();
+    sharedPickupDropoffLocation.setDropOffAdr($scope.order.dropoff);
+    sharedPickupDropoffLocation.setDropOffLon($scope.order.dropoffLon);
+    sharedPickupDropoffLocation.setDropOffLat($scope.order.dropoffLat);
+  });
 
-    $scope.price_text = 'Price';
+  $scope.setNextChangePickup = function() {
+    sharedPickupDropoffLocation.setNextChange("pickup");
+  };
 
-// fetch user's position, reverse geocode the address and set it as pickup
-    $scope.fetchLocation();
+  $scope.setNextChangeDropoff = function() {
+    sharedPickupDropoffLocation.setNextChange("dropoff");
+  };
+
+  $scope.price_text = 'Price';
+  // fetch user's position, reverse geocode the address and set it as pickup
+  $scope.fetchLocation();
 
     $ionicNavBarDelegate.showBackButton(false);
 
@@ -154,10 +184,10 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
 
 app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootScope, Geocoder, sharedCurrentLocation, sharedPickupDropoffLocation, $ionicNavBarDelegate) {
 
-  var location = sharedCurrentLocation.getCurrentLocation();
-
-  var lat = location.latitude;
-  var lon = location.longitude;
+  var lat;
+  var lon;
+  var latLng;
+  var mapOptions;
 
   $ionicNavBarDelegate.showBackButton(true);
 
@@ -174,10 +204,16 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
-  $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
+  $scope.fetchLocation = function() {
+    navigator.geolocation.getCurrentPosition(function(response) {
+      Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(function(address ) {
+        $scope.drawMap(response.coords.latitude, response.coords.longitude, address);
+      });
+    });
+  };
 
-  google.maps.event.addListenerOnce($scope.map, 'idle', function() {
+  $scope.infoBox = function() {
+    google.maps.event.addListenerOnce($scope.map, 'idle', function() {
 
     google.maps.event.addListener($scope.map, "dragend", function() {
       $scope.mapCtrl.coordinates = $scope.map.getCenter().toUrlValue();
@@ -189,7 +225,8 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
       });
     });
 
-  });
+    });
+  };
 
   $scope.mapPicker = function() {
     sharedPickupDropoffLocation.setLat(lat);
@@ -203,5 +240,46 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
     }
     $location.path("/new");
   };
+
+  $scope.drawMap = function(lat, lon, adr) {
+    latLng = new google.maps.LatLng(lat, lon);
+    mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    $scope.mapCtrl = {
+      coordinates: lat + "," + lon,
+      address: adr
+    };
+    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $scope.infoBox();
+  };
+
+  var location = sharedCurrentLocation.getCurrentLocation();
+  var locationAdr = sharedCurrentLocation.getCurrentAddress();
+
+  var dropOffAdr = sharedPickupDropoffLocation.getdropOffAdr();
+  var dropOffLat = sharedPickupDropoffLocation.getDropOffLat();
+  var dropOffLon = sharedPickupDropoffLocation.getDropOffLon();
+
+  var pickupAdr = sharedPickupDropoffLocation.getPickupAdr();
+  var pickupLat = sharedPickupDropoffLocation.getPickupLat();
+  var pickupLon = sharedPickupDropoffLocation.getPickupLon();
+
+  var nextChange = sharedPickupDropoffLocation.getNextChange();
+
+  if (pickupAdr && pickupLat && pickupLon && nextChange == "pickup") {
+    $scope.drawMap(pickupLat, pickupLon, pickupAdr);
+  }
+  else if (dropOffAdr && dropOffLat && dropOffLon && nextChange == "dropoff") {
+    $scope.drawMap(dropOffLat, dropOffLon, dropOffAdr);
+  }
+  else if (location.latitude && location.longitude) {
+    $scope.drawMap(location.latitude, location.longitude, locationAdr);
+  }
+  else {
+    $scope.fetchLocation();
+  }
 
 });
