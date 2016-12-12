@@ -114,6 +114,7 @@ app.controller('orderARideCtrl',
 
       $http.get([API_URL, "orders", "price"].join("/") + '?' + params)
         .then(function(res) {
+          console.log(res);
           $scope.order.price = res.data.price;
           $scope.order.distance = res.data.distance;
           $scope.price_text = '€ ' + res.data.price + ' (' + res.data.distance / 1000 + ' km)';
@@ -204,6 +205,7 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
   if (data) {
     $scope.orderInfo = data.order;
     $scope.driverInfo = data.driver;
+    $scope.orderInfo.travelTime = data.travelTime;
   }
 
   $ionicNavBarDelegate.showBackButton(false);
