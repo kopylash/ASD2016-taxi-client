@@ -108,7 +108,11 @@ app.controller('orderARideCtrl',
 
     $scope.geocodePickup = function() {
       if ($scope.order.pickup && $scope.order.pickup.length > 3) {
-        setTimeout(function() {
+        if ($scope.pickupTimeout) {
+          window.clearTimeout($scope.pickupTimeout);
+        }
+
+        $scope.pickupTimeout = setTimeout(function() {
           Geocoder.encode($scope.order.pickup).then(function(geodata) {
             $scope.order.pickup = geodata.formatted_address;
             $scope.order.pickupLat = geodata.geometry.location.lat;
@@ -124,7 +128,11 @@ app.controller('orderARideCtrl',
 
     $scope.geocodeDropoff = function() {
       if ($scope.order.dropoff && $scope.order.dropoff.length > 3) {
-        setTimeout(function() {
+        if ($scope.dropoffTimeout) {
+          window.clearTimeout($scope.dropoffTimeout);
+        }
+
+        $scope.dropoffTimeout = setTimeout(function() {
           Geocoder.encode($scope.order.dropoff).then(function(geodata) {
             $scope.order.dropoff = geodata.formatted_address;
             $scope.order.dropoffLat = geodata.geometry.location.lat;
