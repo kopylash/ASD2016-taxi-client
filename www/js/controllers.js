@@ -1,6 +1,7 @@
 var app = angular.module('app.controllers', ['geocodingService']);
 
-var API_URL = "http://localhost:3000";
+var API_URL = "http://taxi13.herokuapp.com";
+// var API_URL = "http://localhost:3000";
 
 
 app.controller('orderARideCtrl',
