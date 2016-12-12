@@ -77,6 +77,7 @@ app.controller('orderARideCtrl',
           sharedOrderResponse.setResponse({});
           $location.path("/new");
           $scope.order = {};
+          $scope.price_text = 'Price';
           $scope.$apply();
         });
       }, function(error) {
