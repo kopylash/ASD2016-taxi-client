@@ -149,7 +149,7 @@ app.controller('orderARideCtrl',
 
   });
 
-app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse, PusherService) {
+app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderResponse) {
   var data = sharedOrderResponse.getResponse();
   if (data) {
     $scope.orderInfo = data.order;
