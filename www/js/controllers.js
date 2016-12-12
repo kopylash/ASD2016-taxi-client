@@ -4,7 +4,7 @@ var API_URL = "http://localhost:3000";
 
 
 app.controller('orderARideCtrl',
-  function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService, $ionicNavBarDelegate) {
+  function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService, $ionicNavBarDelegate, $ionicPopup) {
     $scope.order = {};
 
     $scope.fetchLocation = function() {
@@ -40,6 +40,21 @@ app.controller('orderARideCtrl',
       });
     };
 
+    $scope.noDriversFound = function() {
+      $scope.hideLoading();
+
+      PusherService.subscribe($scope.order.phoneNumber);
+
+      $ionicPopup.show({
+        title: 'No drivers found',
+        buttons: [
+          {
+            text: 'OK'
+          }
+        ]
+      });
+    };
+
     $scope.submit = function(order) {
       $scope.order = angular.copy(order);
 
@@ -59,11 +74,15 @@ app.controller('orderARideCtrl',
           distance: $scope.order.distance
         }
       }).then(function(res) {
+        $scope.driverTimeout = setTimeout($scope.noDriversFound, 30000);
+
         console.log("Order response:", res);
         var channel = PusherService.subscribe($scope.order.phoneNumber);
 
         //subscribe for order acceptance
         channel.bind('order_accepted', function(orderData) {
+          clearTimeout($scope.driverTimeout);
+
           console.log("push received", orderData);
           $scope.hideLoading();
           sharedOrderResponse.setResponse(orderData);
