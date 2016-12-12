@@ -10,7 +10,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 .config(function($ionicConfigProvider, $sceDelegateProvider){
 
 
-  $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
+  $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://**/**']);
 
 })
 
@@ -50,4 +50,25 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
         }]
     };
-}])
+}]).factory('Framework', function ($q) {
+  var _navigator = $q.defer();
+  var _cordova = $q.defer();
+  console.log('I am in');
+
+  if (window.cordova === undefined) {
+    _navigator.resolve(window.navigator);
+    _cordova.resolve(false);
+  } else {
+    document.addEventListener('deviceready', function (evt) {
+      _navigator.resolve(navigator);
+      _cordova.resolve(true);
+    });
+  }
+
+  console.log('I am in');
+
+  return {
+    navigator: function() { return _navigator.promise; },
+    cordova: function() { return _cordova.promise; }
+  };
+});
