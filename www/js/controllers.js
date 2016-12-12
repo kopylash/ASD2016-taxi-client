@@ -121,7 +121,7 @@ app.controller('orderARideCtrl',
             sharedPickupDropoffLocation.setPickupLon($scope.order.pickupLon);
             sharedPickupDropoffLocation.setPickupLat($scope.order.pickupLat);
           });
-        }, 1500);
+        }, 2500);
       }
     };
 
@@ -141,7 +141,7 @@ app.controller('orderARideCtrl',
             sharedPickupDropoffLocation.setDropOffLon($scope.order.dropoffLon);
             sharedPickupDropoffLocation.setDropOffLat($scope.order.dropoffLat);
           });
-        }, 1500);
+        }, 2500);
       }
     };
 
