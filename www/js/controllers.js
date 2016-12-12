@@ -178,7 +178,6 @@ app.controller('rideInfoCtrl', function($scope, $stateParams, sharedOrderRespons
     $scope.driverInfo = data.driver;
   }
 
-  //todo subscribe for order finish
   $ionicNavBarDelegate.showBackButton(false);
 });
 
@@ -190,19 +189,6 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
   var mapOptions;
 
   $ionicNavBarDelegate.showBackButton(true);
-
-  $scope.mapCtrl = {
-    coordinates: location,
-    address: sharedCurrentLocation.getCurrentAddress()
-  };
-
-  var latLng = new google.maps.LatLng(location.latitude, location.longitude);
-
-  var mapOptions = {
-    center: latLng,
-    zoom: 15,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
 
   $scope.fetchLocation = function() {
     navigator.geolocation.getCurrentPosition(function(response) {
