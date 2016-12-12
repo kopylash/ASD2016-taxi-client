@@ -5,21 +5,23 @@ var API_URL = "http://taxi13.herokuapp.com";
 
 
 app.controller('orderARideCtrl',
-  function($scope, Geocoder, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService, $ionicNavBarDelegate, $ionicPopup) {
+  function($scope, Geocoder, Framework, $http, $location, $ionicLoading, $ionicPopup, $rootScope, sharedOrderResponse, sharedCurrentLocation, sharedPickupDropoffLocation, PusherService, $ionicNavBarDelegate, $ionicPopup) {
     $scope.order = {};
 
     $scope.fetchLocation = function() {
-      navigator.geolocation.getCurrentPosition(function(response) {
-        var latitude = response.coords.latitude,
-          longitude = response.coords.longitude;
+      Framework.navigator().then(function(navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var latitude = position.coords.latitude,
+            longitude = position.coords.longitude;
 
-        sharedCurrentLocation.setCurrentLocation(response.coords);
+          sharedCurrentLocation.setCurrentLocation(position.coords);
 
-        Geocoder.reverseEncode(latitude, longitude).then(function(address) {
-          $scope.order.pickup = address;
-          $scope.order.pickupLat = latitude;
-          $scope.order.pickupLon = longitude;
-          sharedCurrentLocation.setCurrentAddress(address);
+          Geocoder.reverseEncode(latitude, longitude).then(function(address) {
+            $scope.order.pickup = address;
+            $scope.order.pickupLat = latitude;
+            $scope.order.pickupLon = longitude;
+            sharedCurrentLocation.setCurrentAddress(address);
+          });
         });
       });
     };
@@ -222,9 +224,12 @@ app.controller('mapCtrl', function($scope, $state, $location, $compile, $rootSco
   $ionicNavBarDelegate.showBackButton(true);
 
   $scope.fetchLocation = function() {
-    navigator.geolocation.getCurrentPosition(function(response) {
-      Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(function(address ) {
-        $scope.drawMap(response.coords.latitude, response.coords.longitude, address);
+    Framework.navigator().then(function(navigator) {
+      console.log("NAV",navigator);
+      navigator.geolocation.getCurrentPosition(function(response) {
+        Geocoder.reverseEncode(response.coords.latitude, response.coords.longitude).then(function(address) {
+          $scope.drawMap(response.coords.latitude, response.coords.longitude, address);
+        });
       });
     });
   };
