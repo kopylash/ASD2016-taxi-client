@@ -78,7 +78,7 @@ app.controller('orderARideCtrl',
 
         console.log("Order response:", res);
         var channel = PusherService.subscribe($scope.order.phoneNumber);
-
+        console.log('subscribed to channel ' + $scope.order.phoneNumber);
         //subscribe for order acceptance
         channel.bind('order_accepted', function(orderData) {
           clearTimeout($scope.driverTimeout);
